@@ -2,8 +2,25 @@ import API_Error from '../../../errors/apiError'
 import { IBook } from './book.interface'
 import { Book } from './book.model'
 import StatusCode from 'http-status-codes'
+import cloudinary from 'cloudinary'
 const createBookFromDB = async (payload: IBook): Promise<IBook> => {
-  return await Book.create(payload)
+  const { picture, title, author, publicationDate, genre, reviews } = payload
+  const myCloud = await cloudinary.v2.uploader.upload(picture.url, {
+    folder: 'products',
+    width: 150,
+    crop: 'scale',
+  })
+  return await Book.create({
+    title,
+    author,
+    publicationDate,
+    genre,
+    reviews,
+    picture: {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
+    },
+  })
 }
 
 const getAllBooksFromDB = async (): Promise<IBook[]> => {

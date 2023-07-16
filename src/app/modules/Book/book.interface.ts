@@ -1,11 +1,16 @@
 import { Model } from 'mongoose'
 
 export type IBook = {
+  _id: string
   title: string
   author: string
   genre: string
+  picture: {
+    public_id: string
+    url: string
+  }
   publicationDate: string
-  reviews: []
+  reviews?: []
 }
 
 // crate custom method

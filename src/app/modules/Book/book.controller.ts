@@ -7,7 +7,9 @@ import { BookService } from './book.service'
 
 const createBook = catchAsync(async (req: Request, res: Response) => {
   const { ...bookData } = req.body
+
   const result = await BookService.createBookFromDB(bookData)
+
   sendResponse<IBook>(res, {
     statusCode: StatusCode.OK,
     success: true,

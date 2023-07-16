@@ -1,8 +1,9 @@
 import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import { RootRoute } from './app/modules/Book/book.constant'
+
 import globalErrorHandler from './app/middleware/globalError'
+import { RootRoute } from './app/routes'
 const app: Application = express()
 
 // parser
