@@ -34,7 +34,18 @@ const singInUser = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { ...userData } = req.body
+  await AuthService.resetPasswordFromDB(userData)
+  sendResponse<IAuthResponse>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Password Reset Successfully',
+  })
+})
+
 export const AuthController = {
   singUpUser,
   singInUser,
+  resetPassword,
 }

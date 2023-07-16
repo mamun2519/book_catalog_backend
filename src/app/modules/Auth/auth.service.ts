@@ -5,6 +5,7 @@ import { Auth } from './auth.model'
 import { jwtHelper } from '../../../helper/jwtHelper'
 import config from '../../../config'
 import { Secret } from 'jsonwebtoken'
+import { hashPassword } from '../../../helper/hassPassword'
 
 const singUpUserFromDB = async (payload: IAuth): Promise<IAuthResponse> => {
   const existUser = await Auth.findOne({ email: payload.email })
@@ -72,7 +73,28 @@ const singInUserFromDB = async (
   }
 }
 
+const resetPasswordFromDB = async (payload: ILoginUser) => {
+  const { email, password } = payload
+  const existUser = await Auth.findOne({ email })
+  if (!existUser) {
+    throw new API_Error(StatusCodes.NOT_FOUND, 'User Not found')
+  }
+
+  // match password
+  const isPasswordMatch = await Auth.isPasswordMatch(
+    password,
+    existUser?.password,
+  )
+  if (!isPasswordMatch) {
+    throw new API_Error(StatusCodes.UNAUTHORIZED, 'Password is incorrect')
+  }
+  const newPassword = await hashPassword(password)
+  existUser.password = newPassword
+  existUser.save()
+}
+
 export const AuthService = {
   singUpUserFromDB,
   singInUserFromDB,
+  resetPasswordFromDB,
 }
