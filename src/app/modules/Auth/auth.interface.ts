@@ -18,6 +18,17 @@ export type ILoginUser = {
   password: string
 }
 
+export type IResetPassword = {
+  email: string
+  oldPassword: string
+  newPassword: string
+}
+
+export type IForgetPassword = {
+  email: string
+  newPassword: string
+}
+
 export type AuthModel = {
   isPasswordMatch(
     givenPassword: string,

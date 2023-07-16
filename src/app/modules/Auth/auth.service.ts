@@ -1,6 +1,12 @@
 import { StatusCodes } from 'http-status-codes'
 import API_Error from '../../../errors/apiError'
-import { IAuth, IAuthResponse, ILoginUser } from './auth.interface'
+import {
+  IAuth,
+  IAuthResponse,
+  IForgetPassword,
+  ILoginUser,
+  IResetPassword,
+} from './auth.interface'
 import { Auth } from './auth.model'
 import { jwtHelper } from '../../../helper/jwtHelper'
 import config from '../../../config'
@@ -12,6 +18,8 @@ const singUpUserFromDB = async (payload: IAuth): Promise<IAuthResponse> => {
   if (existUser) {
     throw new API_Error(StatusCodes.OK, 'User Already exist')
   }
+
+  payload.password = await hashPassword(payload.password)
 
   const createUser = await Auth.create(payload)
 
@@ -73,8 +81,8 @@ const singInUserFromDB = async (
   }
 }
 
-const resetPasswordFromDB = async (payload: ILoginUser) => {
-  const { email, password } = payload
+const resetPasswordFromDB = async (payload: IResetPassword) => {
+  const { email, oldPassword, newPassword } = payload
   const existUser = await Auth.findOne({ email })
   if (!existUser) {
     throw new API_Error(StatusCodes.NOT_FOUND, 'User Not found')
@@ -82,19 +90,32 @@ const resetPasswordFromDB = async (payload: ILoginUser) => {
 
   // match password
   const isPasswordMatch = await Auth.isPasswordMatch(
-    password,
+    oldPassword,
     existUser?.password,
   )
   if (!isPasswordMatch) {
     throw new API_Error(StatusCodes.UNAUTHORIZED, 'Password is incorrect')
   }
-  const newPassword = await hashPassword(password)
-  existUser.password = newPassword
-  existUser.save()
+  const newUserPassword = await hashPassword(newPassword)
+  existUser.password = newUserPassword
+  await existUser.save()
+}
+
+const forgetPasswordFromDB = async (payload: IForgetPassword) => {
+  const { email, newPassword } = payload
+  const existUser = await Auth.findOne({ email })
+  if (!existUser) {
+    throw new API_Error(StatusCodes.NOT_FOUND, 'User Not found')
+  }
+
+  const newUserPassword = await hashPassword(newPassword)
+  existUser.password = newUserPassword
+  await existUser.save()
 }
 
 export const AuthService = {
   singUpUserFromDB,
   singInUserFromDB,
   resetPasswordFromDB,
+  forgetPasswordFromDB,
 }
