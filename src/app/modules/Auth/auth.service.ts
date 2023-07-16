@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import API_Error from '../../../errors/apiError'
-import { IAuth, IAuthResponse } from './auth.interface'
+import { IAuth, IAuthResponse, ILoginUser } from './auth.interface'
 import { Auth } from './auth.model'
 import { jwtHelper } from '../../../helper/jwtHelper'
 import config from '../../../config'
@@ -37,7 +37,42 @@ const singUpUserFromDB = async (payload: IAuth): Promise<IAuthResponse> => {
     refreshToken,
   }
 }
+const singInUserFromDB = async (
+  payload: ILoginUser,
+): Promise<IAuthResponse> => {
+  const { email, password } = payload
+  const isUserExist = await Auth.findOne({ email })
+  if (!isUserExist) {
+    throw new API_Error(StatusCodes.NOT_FOUND, 'User does not exist')
+  }
+
+  // match password
+  const isPasswordMatch = await Auth.isPasswordMatch(
+    password,
+    isUserExist.password,
+  )
+  if (!isPasswordMatch) {
+    throw new API_Error(StatusCodes.UNAUTHORIZED, 'Password is incorrect')
+  }
+
+  // create token
+  const data = {
+    role: isUserExist.role,
+    userId: isUserExist._id,
+  }
+  const accessToken = jwtHelper.createToken(
+    data,
+    config.jwt.secretToken as Secret,
+    config.jwt.expireIn as string,
+  )
+
+  return {
+    userId: isUserExist._id,
+    accessToken,
+  }
+}
 
 export const AuthService = {
   singUpUserFromDB,
+  singInUserFromDB,
 }

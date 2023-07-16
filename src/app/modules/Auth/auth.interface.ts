@@ -18,4 +18,9 @@ export type ILoginUser = {
   password: string
 }
 
-export type AuthModel = Model<IAuth, Record<string, unknown>>
+export type AuthModel = {
+  isPasswordMatch(
+    givenPassword: string,
+    savedPassword: string,
+  ): Promise<boolean>
+} & Model<IAuth>

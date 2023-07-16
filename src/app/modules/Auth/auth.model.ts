@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose'
 import { AuthModel, IAuth } from './auth.interface'
 import bcrypt from 'bcrypt'
 import config from '../../../config'
-const authSchema = new Schema<IAuth>(
+const authSchema = new Schema<IAuth, AuthModel>(
   {
     name: {
       type: String,
@@ -37,5 +37,11 @@ authSchema.pre('save', async function (next) {
   user.password = await bcrypt.hash(user.password, Number(config.saltRounds))
   next()
 })
+authSchema.statics.isPasswordMatch = async function (
+  givenPassword: string,
+  savedPassword: string,
+): Promise<boolean> {
+  return await bcrypt.compare(givenPassword, savedPassword)
+}
 
 export const Auth = model<IAuth, AuthModel>('Auth', authSchema)
