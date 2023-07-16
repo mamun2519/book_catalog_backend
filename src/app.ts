@@ -1,6 +1,8 @@
-import express, { Application, Request, Response } from 'express'
+import express, { Application, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { RootRoute } from './app/modules/Book/book.constant'
+import globalErrorHandler from './app/middleware/globalError'
 const app: Application = express()
 
 // parser
@@ -12,6 +14,7 @@ app.use([
 ])
 
 // application route
+app.use('/api/v1/', RootRoute)
 
 // test route
 app.get('/', async (req: Request, res: Response) => {
@@ -19,6 +22,15 @@ app.get('/', async (req: Request, res: Response) => {
 })
 
 // Global Error Handle
+app.use(globalErrorHandler)
 
 // Handle not found route
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({
+    success: false,
+    message: 'Not Found',
+    errorMessages: [{ path: req.originalUrl, message: 'API not found!' }],
+  })
+  next()
+})
 export default app
