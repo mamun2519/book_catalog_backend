@@ -41,6 +41,7 @@ const getSingleBook = catchAsync(async (req: Request, res: Response) => {
 const patchBook = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params
   const { ...updatedData } = req.body
+  console.log(updatedData)
   const result = await BookService.patchBookFromDB(id, updatedData)
   sendResponse<IBook>(res, {
     statusCode: StatusCode.OK,
@@ -60,10 +61,22 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const addBookComment = catchAsync(async (req: Request, res: Response) => {
+  const { ...commentData } = req.body
+  console.log(commentData)
+  await BookService.addBookCommentFromDB(commentData)
+  sendResponse(res, {
+    statusCode: StatusCode.OK,
+    success: true,
+    message: 'Comment Add Successfully!',
+  })
+})
+
 export const BookController = {
   createBook,
   getBooks,
   getSingleBook,
   patchBook,
   deleteBook,
+  addBookComment,
 }

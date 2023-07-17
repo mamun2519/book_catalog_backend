@@ -9,7 +9,9 @@ const app: Application = express()
 // parser
 app.use([
   express.json(),
-  cors(),
+  cors({
+    origin: '*',
+  }),
   express.urlencoded({ extended: true }),
   cookieParser(),
 ])

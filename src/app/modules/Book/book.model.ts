@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, Types, model } from 'mongoose'
 import { BookModel, IBook } from './book.interface'
 
 const bookSchema = new Schema<IBook>(
@@ -33,7 +33,17 @@ const bookSchema = new Schema<IBook>(
     },
 
     reviews: {
-      type: [],
+      type: [
+        {
+          user: {
+            type: Types.ObjectId,
+            ref: 'User',
+          },
+          comment: {
+            type: String,
+          },
+        },
+      ],
     },
   },
   {

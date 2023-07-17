@@ -1,4 +1,5 @@
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
+import { IAuth } from '../Auth/auth.interface'
 
 export type IBook = {
   _id: string
@@ -10,7 +11,12 @@ export type IBook = {
     url: string
   }
   publicationDate: string
-  reviews?: []
+  reviews?: [
+    {
+      user: Types.ObjectId | IAuth
+      comment: string
+    },
+  ]
 }
 
 // crate custom method
