@@ -4,6 +4,7 @@ import { Book } from './book.model'
 import StatusCode, { StatusCodes } from 'http-status-codes'
 import cloudinary from 'cloudinary'
 import { IComment } from './book.constant'
+import { Auth } from '../Auth/auth.model'
 
 const createBookFromDB = async (payload: IBook): Promise<IBook> => {
   const { picture, title, author, publicationDate, genre, reviews } = payload
@@ -66,15 +67,21 @@ const deleteBookFromDB = async (id: string): Promise<IBook | null> => {
 
 const addBookCommentFromDB = async (payload: IComment) => {
   const book = await Book.findById(payload.bookId)
+  const user = await Auth.findById(payload.user)
+  console.log(user)
   console.log(book)
   if (!book) {
     throw new API_Error(StatusCodes.NOT_FOUND, 'Not Found')
   }
   book.reviews?.push({
-    user: payload.userId,
+    user: {
+      name: user?.name as string,
+      email: user?.email as string,
+      avatar: user?.picture.url as string,
+    },
     comment: payload.comment,
   })
-  await book.save()
+  await book.save({ validateBeforeSave: false })
 }
 
 export const BookService = {

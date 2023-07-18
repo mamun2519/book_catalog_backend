@@ -1,4 +1,4 @@
-import { Schema, Types, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import { BookModel, IBook } from './book.interface'
 
 const bookSchema = new Schema<IBook>(
@@ -24,11 +24,9 @@ const bookSchema = new Schema<IBook>(
     picture: {
       public_id: {
         type: String,
-        required: true,
       },
       url: {
         type: String,
-        required: true,
       },
     },
 
@@ -36,8 +34,9 @@ const bookSchema = new Schema<IBook>(
       type: [
         {
           user: {
-            type: Types.ObjectId,
-            ref: 'User',
+            name: String,
+            email: String,
+            avatar: String,
           },
           comment: {
             type: String,

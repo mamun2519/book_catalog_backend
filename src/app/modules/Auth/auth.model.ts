@@ -24,6 +24,14 @@ const authSchema = new Schema<IAuth, AuthModel>(
       type: String,
       default: 'User',
     },
+    picture: {
+      public_id: {
+        type: String,
+      },
+      url: {
+        type: String,
+      },
+    },
   },
   {
     timestamps: true,

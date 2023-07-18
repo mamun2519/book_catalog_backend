@@ -5,6 +5,10 @@ export type IAuth = {
   email: string
   password: string
   role?: string
+  picture: {
+    public_id: string
+    url: string
+  }
 }
 
 export type IAuthResponse = {

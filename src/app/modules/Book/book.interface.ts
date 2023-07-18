@@ -1,5 +1,4 @@
-import { Model, Types } from 'mongoose'
-import { IAuth } from '../Auth/auth.interface'
+import { Model } from 'mongoose'
 
 export type IBook = {
   _id: string
@@ -13,7 +12,11 @@ export type IBook = {
   publicationDate: string
   reviews?: [
     {
-      user: Types.ObjectId | IAuth
+      user: {
+        name: string
+        email: string
+        avatar?: string
+      }
       comment: string
     },
   ]
