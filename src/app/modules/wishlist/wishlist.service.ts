@@ -9,10 +9,13 @@ const createWishListFromDB = async (
   return list
 }
 
-const getAllWishlistFromDb = async (): Promise<
-  IWishList[] | IBook[] | null
-> => {
-  const data = await WishList.find().populate('book')
+const getAllWishlistFromDb = async (
+  id: string,
+): Promise<IWishList[] | IBook[] | null> => {
+  console.log(id)
+  const data = await WishList.find({ user: id }).populate('book')
+
+  console.log(data)
   return data
 }
 

@@ -15,7 +15,7 @@ export type IBook = {
       user: {
         name: string
         email: string
-        avatar?: string
+        avatar: string
       }
       comment: string
     },

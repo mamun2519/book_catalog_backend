@@ -7,6 +7,10 @@ const wishlistSchema = new Schema<IWishList>(
       type: Types.ObjectId,
       ref: 'Book',
     },
+    user: {
+      type: Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

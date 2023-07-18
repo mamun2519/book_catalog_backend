@@ -69,6 +69,7 @@ const addBookCommentFromDB = async (payload: IComment) => {
   const book = await Book.findById(payload.bookId)
   const user = await Auth.findById(payload.user)
   console.log(user)
+  console.log(user)
   console.log(book)
   if (!book) {
     throw new API_Error(StatusCodes.NOT_FOUND, 'Not Found')

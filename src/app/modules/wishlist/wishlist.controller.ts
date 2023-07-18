@@ -18,7 +18,8 @@ const createWishlist = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllWishlist = catchAsync(async (req: Request, res: Response) => {
-  const result = await WishlistService.getAllWishlistFromDb()
+  const { id } = req.params
+  const result = await WishlistService.getAllWishlistFromDb(id)
   sendResponse<IWishList[] | IBook[]>(res, {
     statusCode: StatusCodes.OK,
     success: true,
