@@ -1,3 +1,6 @@
+import { Secret } from 'jsonwebtoken'
+import config from '../../../config'
+import { jwtHelper } from '../../../helper/jwtHelper'
 import { IBook } from '../Book/book.interface'
 import { IWishList } from './wishlist.interface'
 import { WishList } from './wishlist.model'
@@ -10,13 +13,20 @@ const createWishListFromDB = async (
 }
 
 const getAllWishlistFromDb = async (
-  id: string,
-): Promise<IWishList[] | IBook[] | null> => {
-  console.log(id)
-  const data = await WishList.find({ user: id }).populate('book')
+  token: string | null,
+): Promise<IWishList[] | IBook[] | null | undefined> => {
+  try {
+    const tokens = jwtHelper.verifyToken(
+      token as string,
+      config.jwt.secretToken as Secret,
+    )
 
-  console.log(data)
-  return data
+    const data = await WishList.find({ user: tokens?.userId }).populate('book')
+    console.log(data)
+    return data
+  } catch (er) {
+    console.log(er)
+  }
 }
 
 const deleteWishListFromDB = async (id: string): Promise<IWishList | null> => {
