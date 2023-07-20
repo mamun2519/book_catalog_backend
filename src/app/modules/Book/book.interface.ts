@@ -1,6 +1,7 @@
 import { Model } from 'mongoose'
 
 export type IBook = {
+  userId: string
   _id: string
   title: string
   author: string

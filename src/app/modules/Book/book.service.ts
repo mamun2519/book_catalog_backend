@@ -7,7 +7,8 @@ import { IComment } from './book.constant'
 import { Auth } from '../Auth/auth.model'
 
 const createBookFromDB = async (payload: IBook): Promise<IBook> => {
-  const { picture, title, author, publicationDate, genre, reviews } = payload
+  const { picture, title, author, publicationDate, genre, reviews, userId } =
+    payload
   const myCloud = await cloudinary.v2.uploader.upload(picture.url, {
     folder: 'products',
     width: 150,
@@ -19,6 +20,7 @@ const createBookFromDB = async (payload: IBook): Promise<IBook> => {
     publicationDate,
     genre,
     reviews,
+    userId,
     picture: {
       public_id: myCloud.public_id,
       url: myCloud.secure_url,

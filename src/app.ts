@@ -11,6 +11,7 @@ app.use([
   express.json(),
   cors({
     origin: 'https://book-cetalog.web.app',
+    // origin: '*',
   }),
   express.urlencoded({ extended: true }),
   cookieParser(),
