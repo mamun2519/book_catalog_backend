@@ -10,7 +10,7 @@ const app: Application = express()
 app.use([
   express.json(),
   cors({
-    origin: '*',
+    origin: 'https://book-cetalog.web.app',
   }),
   express.urlencoded({ extended: true }),
   cookieParser(),
