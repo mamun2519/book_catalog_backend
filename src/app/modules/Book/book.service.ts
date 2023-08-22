@@ -1,19 +1,22 @@
 import API_Error from '../../../errors/apiError'
-import { IBook } from './book.interface'
+import { IBook, IBookFilters } from './book.interface'
 import { Book } from './book.model'
 import StatusCode, { StatusCodes } from 'http-status-codes'
-import cloudinary from 'cloudinary'
-import { IComment } from './book.constant'
+// import cloudinary from 'cloudinary'
+import { IComment, bookSearchableFields } from './book.constant'
 import { Auth } from '../Auth/auth.model'
 
 const createBookFromDB = async (payload: IBook): Promise<IBook> => {
-  const { picture, title, author, publicationDate, genre, reviews, userId } =
-    payload
-  const myCloud = await cloudinary.v2.uploader.upload(picture.url, {
-    folder: 'products',
-    width: 150,
-    crop: 'scale',
-  })
+  const {
+    picture,
+    title,
+    author,
+    publicationDate,
+    genre,
+    reviews,
+    userId,
+    year,
+  } = payload
   return await Book.create({
     title,
     author,
@@ -21,15 +24,45 @@ const createBookFromDB = async (payload: IBook): Promise<IBook> => {
     genre,
     reviews,
     userId,
+    year,
     picture: {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
+      url: picture,
     },
   })
 }
 
-const getAllBooksFromDB = async (): Promise<IBook[]> => {
-  return await Book.find({})
+const getAllBooksFromDB = async (filters: IBookFilters): Promise<IBook[]> => {
+  const { searchTerm, ...filtersData } = filters
+
+  const conditions = []
+  if (searchTerm) {
+    conditions.push({
+      $or: bookSearchableFields.map(field => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      })),
+    })
+  }
+
+  if (Object.keys(filtersData).length) {
+    conditions.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    })
+  }
+
+  const whereConditions = conditions.length > 0 ? { $and: conditions } : {}
+
+  const books = await Book.find(whereConditions)
+
+  if (!books) {
+    throw new API_Error(404, 'Failed to get books')
+  }
+
+  return books
 }
 
 const getBookDetailsFromDB = async (id: string): Promise<IBook | null> => {

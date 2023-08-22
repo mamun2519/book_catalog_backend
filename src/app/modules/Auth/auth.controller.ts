@@ -25,6 +25,7 @@ const singUpUser = catchAsync(async (req: Request, res: Response) => {
 
 const singInUser = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body
+  console.log(loginData)
   const result = await AuthService.singInUserFromDB(loginData)
   sendResponse<IAuthResponse>(res, {
     statusCode: 200,
@@ -45,6 +46,7 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 })
 const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   const { ...userData } = req.body
+
   await AuthService.forgetPasswordFromDB(userData)
   sendResponse<IAuthResponse>(res, {
     statusCode: 200,

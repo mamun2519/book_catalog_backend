@@ -40,7 +40,8 @@ const patchReadingFromDB = async (
   id: string,
   payload: IReadingList,
 ): Promise<IReadingList | null> => {
-  return await ReadingList.findByIdAndUpdate(id, payload, { new: true })
+  const result = await ReadingList.findByIdAndUpdate(id, payload, { new: true })
+  return result
 }
 export const ReadingService = {
   createReadingFromDB,

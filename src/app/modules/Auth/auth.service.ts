@@ -12,15 +12,11 @@ import { jwtHelper } from '../../../helper/jwtHelper'
 import config from '../../../config'
 import { Secret } from 'jsonwebtoken'
 import { hashPassword } from '../../../helper/hassPassword'
-import cloudinary from 'cloudinary'
+// import cloudinary from 'cloudinary'
 
 const singUpUserFromDB = async (payload: IAuth): Promise<IAuthResponse> => {
   const { picture, password, email, name } = payload
-  const myCloud = await cloudinary.v2.uploader.upload(picture.url, {
-    folder: 'products',
-    width: 150,
-    crop: 'scale',
-  })
+
   const existUser = await Auth.findOne({ email: payload.email })
   if (existUser) {
     throw new API_Error(StatusCodes.OK, 'User Already exist')
@@ -33,8 +29,7 @@ const singUpUserFromDB = async (payload: IAuth): Promise<IAuthResponse> => {
     email,
     name,
     picture: {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
+      url: picture,
     },
   })
 

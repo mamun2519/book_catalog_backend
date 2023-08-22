@@ -46,7 +46,7 @@ const deleteReading = catchAsync(async (req: Request, res: Response) => {
 
 const patchReading = catchAsync(async (req: Request, res: Response) => {
   const { ...updateData } = req.body
-  console.log(updateData)
+
   const { id } = req.params
   const result = await ReadingService.patchReadingFromDB(id, updateData)
   sendResponse<IReadingList>(res, {

@@ -7,3 +7,7 @@ export type IComment = {
   bookId: Types.ObjectId | IBook
   comment: string
 }
+
+export const bookSearchableFields = ['title', 'author', 'genre']
+
+export const bookFilterableFields = ['searchTerm', 'genre', 'year']

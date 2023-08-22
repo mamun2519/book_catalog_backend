@@ -6,6 +6,7 @@ export type IBook = {
   title: string
   author: string
   genre: string
+  year?: string
   picture: {
     public_id: string
     url: string
@@ -21,6 +22,11 @@ export type IBook = {
       comment: string
     },
   ]
+}
+export type IBookFilters = {
+  searchTerm?: string
+  genre?: string
+  publicationYear?: string
 }
 
 // crate custom method
